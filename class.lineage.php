@@ -2,10 +2,12 @@
 class Lineage
 {
     private $db;
+    private $lab;
 
     public function __construct()
     {
         $this->db = DB::getInstance();
+        $this->lab = new Lab();
     }
 
     public function showLineageNew($id){
@@ -39,13 +41,12 @@ class Lineage
     }
 
     private function PedigreeTile($data, $gen){
-
         return "<li class='pedigree-tile'>
                 <a class='pt-content' href='/view/{$data->ref}'>
                     <div class='pt-imgframe g{$gen}'>
                         <img
                             class='pixel g{$gen}'
-                            src='/rimg/{$data->ref}.png'
+                            src='/{$this->lab->renderImage($data->ref)}'
                         />
                     </div>
                     <br/>
@@ -58,7 +59,6 @@ class Lineage
 
     private function build($id,$gen = 0){
       $gen++;
-      $lab = new Lab();
 
       $sql = "SELECT code, name, mother, father
               FROM cats_owned_cats
@@ -71,7 +71,7 @@ class Lineage
       }else{
         $name = $creatureData->name;
       }
-      
+
       $return = array("gen"=>$gen,"name"=>$name,"ref"=>$id);
 
       if($gen < 6){
